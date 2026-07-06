@@ -1,0 +1,10 @@
+{
+    "BEARISH_SCENARIO": {
+        "fvg_type": "BEARISH_FVG",
+        "gap_top": 110.0,
+        "gap_bottom": 105.0,
+        "score_adj": -8,
+        "bull_count": 0,
+        "bear_count": 1
+    }
+}

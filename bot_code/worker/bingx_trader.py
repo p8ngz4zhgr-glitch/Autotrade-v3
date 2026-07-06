@@ -164,6 +164,14 @@ class BingXExchange:
                             triggers[normalized_sym]["tp2"] = float(o.get("price", 0))
         return triggers
 
+
+    def _safe_order(self, params: dict) -> dict:
+        res = self._request("POST", "/openApi/swap/v2/trade/order", params)
+        if res.get("code") == 109400: # One-Way mode error
+            params["positionSide"] = "BOTH"
+            res = self._request("POST", "/openApi/swap/v2/trade/order", params)
+        return res
+
     def place_order(self, symbol: str, side: str, qty: float, sl_price: float, tp_price: float) -> dict:
         """Đặt lệnh Market + cài SL/TP đi kèm"""
         position_side = "LONG" if side == "BUY" else "SHORT"
@@ -174,7 +182,7 @@ class BingXExchange:
             "quantity": qty,
             "positionSide": position_side,
         }
-        res = self._request("POST", "/openApi/swap/v2/trade/order", params)
+        res = self._safe_order(params)
         if res.get("code") == 0:
             # Thành công -> Tiếp tục đặt lệnh TP/SL nếu có
             order_id = res.get("data", {}).get("orderId")
@@ -187,7 +195,7 @@ class BingXExchange:
         opposite_side = "SELL" if side == "BUY" else "BUY"
         position_side = "LONG" if side == "BUY" else "SHORT"
         if sl_price > 0:
-            self._request("POST", "/openApi/swap/v2/trade/order", {
+            self._safe_order({
                 "symbol": symbol,
                 "side": opposite_side,
                 "type": "STOP_MARKET",
@@ -197,7 +205,7 @@ class BingXExchange:
                 "reduceOnly": True
             })
         if tp_price > 0:
-            self._request("POST", "/openApi/swap/v2/trade/order", {
+            self._safe_order({
                 "symbol": symbol,
                 "side": opposite_side,
                 "type": "TAKE_PROFIT_MARKET",
@@ -209,7 +217,7 @@ class BingXExchange:
 
     def cancel_all_orders(self, symbol: str) -> dict:
         """Hủy toàn bộ lệnh chờ của Symbol"""
-        return self._request("POST", "/openApi/swap/v2/trade/cancelAllAfter", {
+        return self._request("DELETE", "/openApi/swap/v2/trade/allOpenOrders", {
             "symbol": symbol
         })
 
@@ -224,7 +232,7 @@ class BingXExchange:
             "positionSide": direction,
             "reduceOnly": True
         }
-        res = self._request("POST", "/openApi/swap/v2/trade/order", params)
+        res = self._safe_order(params)
         if res.get("code") == 0:
             self.cancel_all_orders(symbol)
             return {"ok": True}
