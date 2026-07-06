@@ -1,0 +1,58 @@
+{
+    "bullish_test": {
+        "highs": [
+            100,
+            110,
+            115,
+            118
+        ],
+        "lows": [
+            95,
+            100,
+            105,
+            112
+        ],
+        "closes": [
+            98,
+            108,
+            112,
+            115
+        ],
+        "fvg_result": {
+            "fvg_type": "BULLISH_FVG",
+            "gap_top": 112.0,
+            "gap_bottom": 110.0,
+            "score_adj": 16,
+            "bull_count": 2,
+            "bear_count": 0
+        }
+    },
+    "bearish_test": {
+        "highs": [
+            115,
+            110,
+            105,
+            102
+        ],
+        "lows": [
+            110,
+            100,
+            95,
+            90
+        ],
+        "closes": [
+            112,
+            105,
+            98,
+            95
+        ],
+        "fvg_result": {
+            "fvg_type": "BEARISH_FVG",
+            "gap_top": 110.0,
+            "gap_bottom": 105.0,
+            "score_adj": -8,
+            "bull_count": 0,
+            "bear_count": 1
+        }
+    }
+}
