@@ -49,6 +49,10 @@ class CryptoFetcher:
 
     def _bgx(self, s):
         s = str(s).strip().upper()
+        # FIX: Map mã Vàng nội bộ sang định dạng API BingX
+        if "GOLD" in s or "XAU" in s:
+            return "GOLD-USDT"
+            
         if '-' in s: return s
         if s.endswith('USDT'):
             return s[:-4] + '-USDT'
@@ -56,6 +60,10 @@ class CryptoFetcher:
 
     def _bbt(self, s):
         s = str(s).strip().upper()
+        # FIX: Map mã Vàng nội bộ sang định dạng API Bybit
+        if "GOLD" in s or "XAU" in s:
+            return "XAUUSDT"
+            
         return s.replace('-', '')
 
     def _tbvol_ratio(self, closes):
