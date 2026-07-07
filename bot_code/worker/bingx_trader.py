@@ -135,9 +135,16 @@ class BingXExchange:
                             continue
                         sym = p.get("symbol", "")
                         normalized_sym = sym.replace("-", "") if sym else ""
+                        
+                        pos_side = p.get("positionSide")
+                        if pos_side in ("LONG", "SHORT"):
+                            direction = pos_side
+                        else:
+                            direction = "LONG" if qty > 0 else "SHORT"
+                            
                         positions.append({
                             "symbol": normalized_sym,
-                            "direction": "LONG" if qty > 0 else "SHORT",
+                            "direction": direction,
                             "entry": float(p.get("entryPrice", 0)),
                             "qty": abs(qty),
                             "pnl": float(p.get("unrealizedProfit", 0)),
